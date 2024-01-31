@@ -1,0 +1,62 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE = 'laravel-app:latest'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script {
+                    sh 'composer install --no-scripts --no-autoloader'
+                    sh 'composer dump-autoload'
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                script {
+                    // Need to add testing commands
+                    // For example: sh 'phpunit'
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh 'docker build -t $DOCKER_IMAGE .'
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    // Assuming you have Docker already configured
+                    sh 'docker push $DOCKER_IMAGE'
+                    // Add commands to deploy the Docker image on the server
+                    // For example: ssh user@<IP> "docker-compose up -d"
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline succeeded! Deployment completed.'
+        }
+        failure {
+            echo 'Pipeline failed! Deployment aborted.'
+        }
+    }
+}
+

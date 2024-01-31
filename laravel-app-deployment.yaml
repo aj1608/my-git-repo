@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: laravel-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: laravel-app
+  template:
+    metadata:
+      labels:
+        app: laravel-app
+    spec:
+      containers:
+        - name: laravel-app
+          image: my-registry/laravel-app:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: APP_ENV
+              value: testing
+            - name: APP_KEY
+              value: <generated-app-key>  
+            - name: APP_DEBUG
+              value: "false"
+            - name: APP_URL
+              value: http://laravel-app-service  
+            - name: DB_CONNECTION
+              value: mysql
+            - name: DB_HOST
+              value: your-mysql-host  
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_DATABASE
+              value: laravel
+            - name: DB_USERNAME
+              value: laravel
+            - name: DB_PASSWORD
+              value: secret
+  strategy:
+    type: RollingUpdate
+  revisionHistoryLimit: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: laravel-app-service
+spec:
+  selector:
+    app: laravel-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer  # ClusterIP or NodePort
