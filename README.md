@@ -53,4 +53,4 @@
 - Understanding of cloud services and server management (depending on the deployment target).
 - Implementation of security best practices in the deployment.
 - Setup of basic monitoring and logging for the application.
-- Quality of documentation and ease of accessing the deployed application.
+- Quality of documentation and ease of accessing the deployed application.# my-git-repo
